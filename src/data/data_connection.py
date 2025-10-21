@@ -1,24 +1,22 @@
 # data_connection.py
-# Conexión a SQL Server usando parámetros de config.yaml
+# Conexión a SQL Server usando parámetros de st.secrets
 
-import yaml
+import streamlit as st
 from sqlalchemy import create_engine
 
 
-def get_engine(config_path='config/config.yaml', servidor=None):
+def get_engine(servidor=None):
     """
-    Lee parámetros de conexión desde config.yaml y retorna un engine SQLAlchemy.
-    Si se pasa 'servidor', lo usa en vez del principal del config.
+    Lee parámetros de conexión desde st.secrets y retorna un engine SQLAlchemy.
+    Si se pasa 'servidor', lo usa en vez del principal de los secrets.
     """
-    with open(config_path, 'r') as f:
-        params = yaml.safe_load(f)
     if servidor is None:
-        server = params.get('servidor', '')
+        server = st.secrets["SERVIDOR"]
     else:
         server = servidor
-    database = params.get('base_datos', '')
-    username = params.get('usuario', '')
-    password = params.get('password', '')
+    database = st.secrets["BASE_DATOS"]
+    username = st.secrets["USUARIO"]
+    password = st.secrets["PASSWORD"]
     conn_str = (
         f"mssql+pyodbc://{username}:{password}@{server}/{database}?driver=ODBC+Driver+17+for+SQL+Server"
     )
