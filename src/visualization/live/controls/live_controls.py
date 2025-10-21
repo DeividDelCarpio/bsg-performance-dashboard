@@ -35,7 +35,10 @@ def render_time_controls(instancias):
     # Col3: Instancia
     with col3:
         opciones_inst = ["Todas"] + instancias
-        default_inst_idx = opciones_inst.index("SERVER-BD-3\SERVERBD3") if "SERVER-BD-3\SERVERBD3" in opciones_inst else 1
+        if "SERVER-BD-3\\SERVERBD3" in opciones_inst:
+            default_inst_idx = opciones_inst.index("SERVER-BD-3\\SERVERBD3")
+        else:
+            default_inst_idx = 0  # Siempre seguro, apunta a "Todas"
         instancia = st.selectbox("Instancia", options=opciones_inst, index=default_inst_idx, key="instancia_main")
     # Col4: Métricas
     with col4:
