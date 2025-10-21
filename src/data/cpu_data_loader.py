@@ -2,19 +2,17 @@
 # Función para consultar y cargar datos de uso de CPU
 
 import pandas as pd
-import yaml
+import streamlit as st
 from src.data.data_connection import get_engine
 
 def load_cpu_data(fecha_inicio, fecha_fin, instancia=None, hora_inicio=None, hora_fin=None, filtrar_hora=False, incluir_secundario=True):
     """
     Ejecuta una consulta sobre [aud].[T_AuditoriaUsoCPU] filtrando por fechas y opcionalmente por instancia.
     """
-    # Cargar servidores desde config.yaml
-    with open('config/config.yaml', 'r') as f:
-        config = yaml.safe_load(f)
-    servidores = [(config.get('servidor', ''), 'Principal')]
-    if incluir_secundario and config.get('servidor_secundario'):
-        servidores.append((config['servidor_secundario'], 'Secundario'))
+    # Cargar servidores desde st.secrets
+    servidores = [(st.secrets["SERVIDOR"], 'Principal')]
+    if incluir_secundario and "SERVIDOR_SECUNDARIO" in st.secrets:
+        servidores.append((st.secrets["SERVIDOR_SECUNDARIO"], 'Secundario'))
 
     dfs = []
     for servidor, nombre_servidor in servidores:
@@ -42,11 +40,9 @@ def load_cpu_data_by_hour(fecha_inicio, fecha_fin, hora_inicio, hora_fin, instan
     """
     Consulta datos filtrando por fecha y por rango de horas (en SQL).
     """
-    with open('config/config.yaml', 'r') as f:
-        config = yaml.safe_load(f)
-    servidores = [(config.get('servidor', ''), 'Principal')]
-    if incluir_secundario and config.get('servidor_secundario'):
-        servidores.append((config['servidor_secundario'], 'Secundario'))
+    servidores = [(st.secrets["SERVIDOR"], 'Principal')]
+    if incluir_secundario and "SERVIDOR_SECUNDARIO" in st.secrets:
+        servidores.append((st.secrets["SERVIDOR_SECUNDARIO"], 'Secundario'))
 
     dfs = []
     for servidor, nombre_servidor in servidores:
@@ -76,13 +72,9 @@ def get_fecha_inicio_fin_instancia(instancia):
     """
     Retorna la fecha de inicio y fin (primer y último FechaEvento) para una instancia dada.
     """
-    import yaml
-    from src.data.data_connection import get_engine
-    with open('config/config.yaml', 'r') as f:
-        config = yaml.safe_load(f)
-    servidores = [config.get('servidor', '')]
-    if config.get('servidor_secundario'):
-        servidores.append(config['servidor_secundario'])
+    servidores = [st.secrets["SERVIDOR"]]
+    if "SERVIDOR_SECUNDARIO" in st.secrets:
+        servidores.append(st.secrets["SERVIDOR_SECUNDARIO"])
 
     fechas_inicio = []
     fechas_fin = []
