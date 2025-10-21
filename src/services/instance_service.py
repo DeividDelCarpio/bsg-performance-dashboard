@@ -4,14 +4,13 @@
 import pandas as pd
 import yaml
 from src.data.data_connection import get_engine
+import streamlit as st
 
 def get_instancias():
-    # Cargar servidores desde config.yaml
-    with open('config/config.yaml', 'r') as f:
-        config = yaml.safe_load(f)
-    servidores = [config.get('servidor', '')]
-    if config.get('servidor_secundario'):
-        servidores.append(config['servidor_secundario'])
+    # Cargar servidores desde st.secrets
+    servidores = [st.secrets["SERVIDOR"]]
+    if "SERVIDOR_SECUNDARIO" in st.secrets:
+        servidores.append(st.secrets["SERVIDOR_SECUNDARIO"])
 
     instancias = set()
     for servidor in servidores:
