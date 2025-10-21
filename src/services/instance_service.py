@@ -21,6 +21,9 @@ def get_instancias():
                 engine
             )
             instancias.update(df_inst['Instancia'].dropna().unique().tolist())
-        except Exception:
-            pass
-    return sorted(instancias)
+        except Exception as e:
+            st.warning(f"Error consultando instancias en {servidor}: {e}")
+    result = sorted(instancias)
+    if not result:
+        result = ["Todas"]
+    return result
