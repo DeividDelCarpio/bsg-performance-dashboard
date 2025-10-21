@@ -16,7 +16,8 @@ def render_live_section():
     from src.services.instance_service import get_instancias
     instancias = get_instancias()
     with st.container():
-        with st.form("live_form"):
+        form = st.form("live_form")
+        with form:
             (
                 rango, granularidad, instancia, uso, sin_uso, uso_otro, fecha_inicio, fecha_fin, hora_inicio, hora_fin, top_n, dividir
             ) = render_time_controls(instancias)
